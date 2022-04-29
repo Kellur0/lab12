@@ -1,4 +1,4 @@
-package trees;
+package tree;
 
 import java.util.*;
 import java.io.*;
@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.filechooser.*;
 
 
-public class FamilyTree
+public class FamilyTree //extends IOException
 {
     
     private static class TreeNode
