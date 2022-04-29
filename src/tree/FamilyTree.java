@@ -35,7 +35,7 @@ public class FamilyTree //extends IOException
             // set childNode's parent to this node.
         	
         	childNode.parent =this;
-        	parent.children.add(childNode);
+        	children.add(childNode);
         }
         
         // Searches subtree at this node for a node
@@ -50,10 +50,10 @@ public class FamilyTree //extends IOException
             for (TreeNode child: children)
             {
                 // If child.getNodeWithName(targetName) returns a non-null node,
-               // TreeNode target = recursiveFind(child,targetName);
             	// then that's the node we're looking for. Return it.
-            	if(child.getNodeWithName(targetName) !=null) {
-            		return child;}
+            	TreeNode targetNode = child.getNodeWithName(targetName);
+            	if(targetNode !=null) {
+            		return targetNode;}
             }
             
             // Not found anywhere.
@@ -153,6 +153,10 @@ public class FamilyTree //extends IOException
 		else
 		parentNode = root.getNodeWithName(parent);
 		// Add child nodes to parentNode.
+		if(parentNode == null)
+			throw new TreeException("Illegal line (No colon): " + line);
+		
+		
 		for (String childName: childrenArray)
 		{
 			TreeNode childNode = new TreeNode(childName);
@@ -167,23 +171,26 @@ public class FamilyTree //extends IOException
 	// "Depth" of a node is the "distance" between that node and the root. The depth of the root is 0. The
 	// depth of the root's immediate children is 1, and so on.
 	//
-	String getMostRecentCommonAncestor(String name1, String name2) throws TreeException
+	TreeNode getMostRecentCommonAncestor(String name1, String name2) throws TreeException
 	{
 		// Get nodes for input names.
 		TreeNode node1 = root.getNodeWithName(name1);
 		if (node1 == null)
-		throw new TreeException("No tree member with name " + name1);
+			throw new TreeException("No tree member with name " + name1);
 		TreeNode node2 = root.getNodeWithName(name2);
 		if (node2 == null)
-		throw new TreeException("No tree member with name " + name2);
+			throw new TreeException("No tree member with name " + name2);
+		
 		// Get ancestors of node1 and node2.
 		ArrayList<TreeNode> ancestorsOf1 = node1.collectAncestorsToList();
 		ArrayList<TreeNode> ancestorsOf2 = node2.collectAncestorsToList();
+		
 		// Check members of ancestorsOf1 in order until you find a node that is also
 		// an ancestor of 2. 
 		for (TreeNode n1: ancestorsOf1)
 		if (ancestorsOf2.contains(n1))
-			return n1.getName();
+			return n1;
+		
 		// No common ancestor.
 		return null;
 	}
@@ -201,7 +208,7 @@ public class FamilyTree //extends IOException
 		{
 			FamilyTree tree = new FamilyTree();
 			System.out.println("Tree:\n" + tree + "\n**************\n");
-			String ancestor = tree.getMostRecentCommonAncestor("Bilbo", "Frodo");
+			TreeNode ancestor = tree.getMostRecentCommonAncestor("Bilbo", "Frodo");
 			System.out.println("Most recent common ancestor of Bilbo and Frodo is " + ancestor);
 		}
 		catch (IOException x)
